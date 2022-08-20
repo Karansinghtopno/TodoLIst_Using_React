@@ -1,32 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import todo from "../images/todo-1.jpg";
 import "./ToDoList.css";
 // import {FaHandPeace} from 'react-icons/fa'
 
+const getListFromLocal=()=>{
+  let list =localStorage.getItem("todolist");
+  console.log(list);
+  if(list){
+    return  JSON.parse( localStorage.getItem("todolist"));
+  }
+  else return [];
+} 
+
 const ToDoList = () => {
   //state for input data
   const [inputData, setInputData] = useState("");
+
   //state for storing data
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(getListFromLocal());
+
   //function for adding the items to an empty array
   const addItem = () => {
     if (!inputData) return;
     setItems([...items, inputData]);
     setInputData("");
   };
-  //deleting an item in an item list
-  const deleteItem=(index)=>{
-    console.log("removing from index: ",index);
-    const updatedItems= items.filter(( element, ind)=>{
-      return ind !== index;
 
-    })
+  //deleting an item in an item list
+  const deleteItem = (index) => {
+    console.log("removing from index: ", index);
+    const updatedItems = items.filter((element, ind) => {
+      return ind !== index;
+    });
     setItems(updatedItems);
-  }
+  };
+
   //removing all the items at once
-  const removeAll=()=>{
+  const removeAll = () => {
     setItems([]);
-  }
+  };
+
+  //add data to local storage
+   //local storege always store in key, value pair
+    // keys & value is always in string format
+  useEffect(() => {
+   
+    localStorage.setItem("todolist", JSON.stringify(items))
+  }, [items]);
+
   return (
     <>
       <div className="main-div">
@@ -61,7 +82,11 @@ const ToDoList = () => {
               return (
                 <div className="eachItem" key={ind}>
                   <h3>{element}</h3>
-                  <i title="Delete Item" class="fa-solid fa-trash-can" onClick={()=> deleteItem(ind)}></i>
+                  <i
+                    title="Delete Item"
+                    class="fa-solid fa-trash-can"
+                    onClick={() => deleteItem(ind)}
+                  ></i>
                 </div>
               );
             })}
