@@ -5,7 +5,7 @@ import "./ToDoList.css";
 
 const getListFromLocal=()=>{
   let list =localStorage.getItem("todolist");
-  console.log(list);
+  // console.log(list);
   if(list){
     return  JSON.parse( localStorage.getItem("todolist"));
   }
@@ -22,15 +22,17 @@ const ToDoList = () => {
   //function for adding the items to an empty array
   const addItem = () => {
     if (!inputData) return;
-    setItems([...items, inputData]);
+    const listObject={ id:new Date().getTime().toString(), list:inputData}
+    setItems([...items, listObject]);
     setInputData("");
+    // console.log(listObject);
   };
 
   //deleting an item in an item list
   const deleteItem = (index) => {
     console.log("removing from index: ", index);
-    const updatedItems = items.filter((element, ind) => {
-      return ind !== index;
+    const updatedItems = items.filter((element) => {
+      return index !== element.id;
     });
     setItems(updatedItems);
   };
@@ -78,14 +80,14 @@ const ToDoList = () => {
             ></i>
           </div>
           <div className="showItems">
-            {items.map((element, ind) => {
+            {items.map((element) => {
               return (
-                <div className="eachItem" key={ind}>
-                  <h3>{element}</h3>
+                <div className="eachItem" key={element.id}>
+                  <h3>{element.list}</h3>
                   <i
                     title="Delete Item"
                     class="fa-solid fa-trash-can"
-                    onClick={() => deleteItem(ind)}
+                    onClick={() => deleteItem(element.id)}
                   ></i>
                 </div>
               );
