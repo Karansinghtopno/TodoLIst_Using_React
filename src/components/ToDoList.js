@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState} from "react";
 import todo from "../images/to-do-list.svg"
 
+//to set from local stroage
+const getLocalItems=()=>{
+  let list = localStorage.getItem('lists');
+  console.log(list);
+  if(list){
+    return JSON.parse(localStorage.getItem('lists'));
+  }else{
+    return [];
+  }
+}
+
 function ToDoList() {
   const [inputData,setInputData]= useState("");
-  const [items,setItems]=useState([]);
+  const [items,setItems]=useState(getLocalItems());
 
 
   //Add Item
@@ -35,7 +46,10 @@ function ToDoList() {
     setItems([]);
   }
 
-
+  // add data to local Storage
+  useEffect(()=>{
+    localStorage.setItem('lists', JSON.stringify(items))
+  },[items]);
 
   return <>
       <div className="main-div">
